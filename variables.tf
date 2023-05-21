@@ -7,16 +7,6 @@ variable "region" {
   description = "region"
 }
 
-variable "gke_username" {
-  default     = ""
-  description = "gke username"
-}
-
-variable "gke_password" {
-  default     = ""
-  description = "gke password"
-}
-
 variable "gke_num_nodes" {
   default     = 2
   description = "number of gke nodes"
@@ -25,4 +15,9 @@ variable "gke_num_nodes" {
 variable "gke_cluster_name" {
   default     = "my-first-cluster-1"
   description = "number of gke nodes"
+}
+
+variable "disk_size_gb" {
+  default     = 100
+  description = "cluster disk size minimum 10GB"
 }
