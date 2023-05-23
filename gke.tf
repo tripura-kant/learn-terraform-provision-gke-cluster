@@ -1,7 +1,12 @@
-# # data "google_service_account" "gke_sa" {
-# #    account_id = "Change me  gke-service-account-id"
-# #    project    = var.project_id
-# #  }
+# data "google_service_account" "gke_sa" {
+#    account_id = "Change me  gke-service-account-id"
+#    project    = var.project_id
+#  }
+
+# resource "google_service_account" "gke_sa" {
+#   account_id   = "service-account-id"
+#   display_name = "Service Account"
+# }
 
 # GKE cluster
 resource "google_container_cluster" "primary" {
@@ -14,7 +19,7 @@ resource "google_container_cluster" "primary" {
   subnetwork = data.google_compute_subnetwork.subnet.name
 
   project = var.project_id
-  #service_account = data.google_service_account.gke_sa.email
+  #service_account = google_service_account.gke_sa.email
 }
 
 # Separately Managed Node Pool
@@ -44,23 +49,11 @@ resource "google_container_node_pool" "primary_nodes" {
       env = var.project_id
     }
 
-
-
     metadata = {
       disable-legacy-endpoints = "true"
     }
   }
-
-
 }
-
-# data "google_container_node_pool" "default" {
-#   name = "my-node-pool"
-# } 
-
-# output "node_pool_name" {
-#   value = data.google_container_node_pool.default.name
-# }
 
 resource "google_compute_disk" "disk" {
   name = "gce-nfs-disk"
@@ -71,11 +64,15 @@ resource "google_compute_disk" "disk" {
 
 
 
-# resource "google_compute_attached_disk" "disk_attachment" {
-# disk = google_compute_disk.disk.self_link
+resource "google_compute_attached_disk" "disk_attachment" {
+disk = google_compute_disk.disk.self_link
+provisioner "local-exec" {
+    command = "gcloud compute instances list --filter="tags.items=test" --format="value(name)" | head -1 >> node.txt"
+  }
+instance = file("node.txt")
 # instance = google_container_cluster.my-cluster.name
-# mode = "READ_WRITE"
-# zone = var.zone
-# }
+mode = "READ_WRITE"
+zone = var.zone
+}
 
 #gcloud compute instances list --filter="tags.items=test" --format="value(name)" | head -1
