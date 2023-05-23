@@ -7,6 +7,11 @@ variable "region" {
   description = "region"
 }
 
+variable "zone" {
+  default     = "us-central1-c"
+  description = "region"
+}
+
 variable "gke_num_nodes" {
   default     = 2
   description = "number of gke nodes"
@@ -18,6 +23,6 @@ variable "gke_cluster_name" {
 }
 
 variable "disk_size_gb" {
-  default     = 100
+  default     = 10
   description = "cluster disk size minimum 10GB"
 }
