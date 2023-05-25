@@ -1,12 +1,3 @@
-# data "google_service_account" "gke_sa" {
-#    account_id = "Change me  gke-service-account-id"
-#    project    = var.project_id
-#  }
-
-# resource "google_service_account" "gke_sa" {
-#   account_id   = "service-account-id"
-#   display_name = "Service Account"
-# }
 
 # GKE cluster
 resource "google_container_cluster" "primary" {
@@ -44,7 +35,7 @@ resource "google_container_node_pool" "primary_nodes" {
       "https://www.googleapis.com/auth/monitoring",
     ]
 
-    tags = ["test"] 
+    tags = ["test"]
     labels = {
       env = var.project_id
     }
@@ -63,16 +54,3 @@ resource "google_compute_disk" "disk" {
 }
 
 
-
-resource "google_compute_attached_disk" "disk_attachment" {
-disk = google_compute_disk.disk.self_link
-provisioner "local-exec" {
-    command = "gcloud compute instances list --filter="tags.items=test" --format="value(name)" | head -1 >> node.txt"
-  }
-instance = file("node.txt")
-# instance = google_container_cluster.my-cluster.name
-mode = "READ_WRITE"
-zone = var.zone
-}
-
-#gcloud compute instances list --filter="tags.items=test" --format="value(name)" | head -1
